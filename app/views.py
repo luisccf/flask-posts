@@ -16,11 +16,17 @@ def add():
 		return render_template('index.html', title='Home', posts=models.Post.query.all())
 	return render_template('add.html', title='Add Post', header='New post', users=models.User.query.all())
 
-@app.route('/posts', methods=['GET', 'DELETE', 'POST'])
+@app.route('/posts', methods=['GET', 'DELETE'])
 def posts():
 	if request.method == 'DELETE':
 		return render_template('success.html', title='Success')
 	return render_template('posts.html', title='Posts', header='All Posts', posts=models.Post.query.all())
+
+@app.route('/posts/<int:post_id>')
+def post(post_id):
+	post = models.Post.query.get(post_id)
+	#import pdb; pdb.set_trace()
+	return render_template('post.html', title=post.title, header=post.title, post=post)
 	
 @app.route('/posts/remove/<int:post_id>')
 def remove(post_id):
@@ -31,3 +37,9 @@ def remove(post_id):
 @app.route('/users')
 def users():
 	return render_template('users.html', title='Users', header='Users', users=models.User.query.all())
+
+@app.route('/posts/<int:post_id>/comment', methods=['GET', 'POST'])
+def comment(post_id):
+	return render_template('comment.html', title='Add comment', header='Add comment')
+
+
