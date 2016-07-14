@@ -1,14 +1,16 @@
 <html>
 <head>
-	<title>News</title>
-	<link rel="stylesheet" href="../static/css/style.css"/>
+	<title>{{ title }}</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
 </head>
 <body>
 	<nav>
-		<a href="{{ url_for('index') }}">Home</a> | 
-		<a href="{{ url_for('add') }}">Add</a>
+		<a href="{{ url_for('index') }}">Home</a> |
+		<a href="{{ url_for('users') }}">Users</a> | 
+		<a href="{{ url_for('posts') }}">Posts</a>
 	</nav>
 	<hr>
+	<h3> {{ header }} </h3>
 	{% block content %}
 	{% endblock %}
 </body>

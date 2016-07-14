@@ -1,11 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
+<a href="{{ url_for('add') }}">[Add Post]</a>
 {% for post in posts %}
 <p>
 	[{{ post.timestamp.strftime('%d/%m/%y %H:%M') }}]
 	<br>
 	<strong>{{ post.title }}</strong>
 	<small>by {{ post.author.nickname }}</small>
+	<br><a href="posts/remove/{{ post.id }}">[Remove]</a>
 </p>
 {% endfor %}
+
 {% endblock %}
