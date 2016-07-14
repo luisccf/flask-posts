@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h3>Add new</h3>
+<form method="post" action="{{ url_for('add') }}">
+	<label>Title</label>
+	<br>
+	<input type="text" name="title" id="title">
+	<br><br>
+	<label>Text</label>
+	<br>
+	<textarea name="text" id="text"></textarea>
+	<br><br>
+	<button type="submit">Post</button>
+</form>
+
+{% endblock %}
