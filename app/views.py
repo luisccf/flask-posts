@@ -1,12 +1,12 @@
 from flask import render_template, url_for, flash, redirect, request, abort
-from app import app, db, models
+from app import app, db, models, login_manager
 from forms import LoginForm
+from flask_login import login_user, logout_user, current_user, login_required
 import datetime
 
 @app.route('/')
 def index():
-	user = models.User.query.get(1)
-	return render_template('index.html', title='Home', header='App', user=user)
+	return render_template('index.html', title='Home', header='App')
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
@@ -58,14 +58,21 @@ def comment(post_id):
 		return redirect(url_for('post', post_id=post_id))
 	return render_template('comment.html', title='Add comment', header='Add comment', users=models.User.query.all(), post_id=post_id)
 
-@app.route('/users/add', methods=['GET', 'POST'])
-def add_user():
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+	form = LoginForm()
 	if request.method == 'POST':
-		user = request.form.to_dict()
-		db.session.add(models.User(nickname=user['nickname'], password=user['password']))
-		db.session.commit()
-		return redirect(url_for('users'))
-	return render_template('add_user.html', title='Sign up', header='Sign up')
+		if form.validate_on_submit():
+			response = request.form.to_dict()
+			if db.session.query(models.User).filter_by(nickname=response['nickname']).first():
+				return render_template('login.html', header='Sign up', form=form, message='Nickname already taken!')
+			user = models.User(nickname=response['nickname'], password=response['password'])
+			db.session.add(user)
+			db.session.commit()
+			login_user(user)
+			return redirect(url_for('index'))
+		return render_template('login.html', header='Sign up', form=form, message='Please enter nickname and password!')
+	return render_template('login.html', title='Sign up', header='Sign up', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -74,22 +81,26 @@ def login():
 		if form.validate_on_submit():
 			user = user_logging_in(form)
 			if user is None:
-				return render_template('login.html', form=form, wrong=True)
+				return render_template('login.html', header='Sign in', form=form, message='Wrong username or password!')
+			login_user(user)
 			return render_template('index.html', title='Home', header='App', user=user)
-			#response = form.to_dict()
-			#user = db.session.query(models.User).filter_by(nickname=response['nickname']).first()
-			#login_user(user)
-			#next = flask.request.args.get('next')
-			#if not next_is_valid(next):
-			#	return flask.abort(400)
-			#return redirect(url_for('index'))
-	return render_template('login.html', form=form, wrong=False)
+		return render_template('login.html', header='Sign in', form=form, message='Please enter nickname and password!')
+	return render_template('login.html', header='Sign in', form=form)
 
 def user_logging_in(form):
 	user = db.session.query(models.User).filter_by(nickname=form.nickname.data).first()
 	if user is None or form.password.data != user.password:
 		return None
 	return user
+
+@app.route('/logout')
+def logout():
+	logout_user()
+	return redirect(url_for('index'))
+
+@login_manager.user_loader
+def load_user(user_id):
+	return models.User.query.get(int(user_id))
 
 
 
