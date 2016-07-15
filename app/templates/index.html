@@ -1,11 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
-{% for post in posts %}
-<p>
-	[{{ post.timestamp.strftime('%d/%m/%y %H:%M') }}]
-	<br>
-	<strong><a href="posts/{{ post.id }}">{{ post.title }}</a></strong>
-	<small>by {{ post.author.nickname }}</small>
-</p>
-{% endfor %}
+<p>Welcome, {{ user.nickname }}</p>
+<a href="{{ url_for('user', nickname=user.nickname) }}">View your posts</a>
+<br>
+<a href="{{ url_for('add') }}">Post something</a>
 {% endblock %}

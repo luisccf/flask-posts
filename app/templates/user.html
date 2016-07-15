@@ -8,6 +8,8 @@
 	<small>by {{ post.author.nickname }}</small>
 	<br><a href="{{ url_for('remove', user_page=1, post_id=post.id) }}">[Remove]</a>
 </p>
+{% else %}
+<p>No posts from {{user.nickname}}!</p>
 {% endfor %}
 
 {% endblock %}

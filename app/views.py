@@ -4,7 +4,8 @@ import datetime
 
 @app.route('/')
 def index():
-	return render_template('index.html', title='Home', header='Posts', posts=models.Post.query.all(), authors=models.User.query.all())
+	user = models.User.query.get(1)
+	return render_template('index.html', title='Home', header='App', user=user)
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
