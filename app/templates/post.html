@@ -2,8 +2,10 @@
 {% block content %}
 <p>posted by {{ post.author.nickname }} at {{ post.timestamp.strftime('%d/%m/%y %H:%M') }}</p>
 <h4>Comments</h4>
-<a href="{{ url_for('posts/{{ post.id }}/comment') }}">[Add comment]</a>
+<a href="{{ url_for('comment', post_id=post.id) }}">[Add comment]</a>
+<br>
 {% for comment in post.comments %}
+<br>
 <p>{{ comment.content }}</p>
 <p><small>by {{ comment.author.nickname }}</small></p>
 {% endfor %}

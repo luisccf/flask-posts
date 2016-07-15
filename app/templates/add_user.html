@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<form method="post" action="{{ url_for('add_user') }}">
+	<label>Nickname</label>
+	<br>
+	<input type="text" name="nickname" id="nickname">
+	<br><br>
+	<label>Password</label>
+	<br>
+	<input type="password" name="password" id="password">
+	<br><br>
+	<button type="submit">Sign up</button>
+</form>
+
+{% endblock %}

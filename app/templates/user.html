@@ -1,13 +1,12 @@
 {% extends "layout.html" %}
 {% block content %}
-<a href="{{ url_for('add') }}">[Add Post]</a>
-{% for post in posts %}
+{% for post in user.posts %}
 <p>
 	[{{ post.timestamp.strftime('%d/%m/%y %H:%M') }}]
 	<br>
 	<strong><a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></strong>
 	<small>by {{ post.author.nickname }}</small>
-	<br><a href="{{ url_for('remove', user_page=0, post_id=post.id) }}">[Remove]</a>
+	<br><a href="{{ url_for('remove', user_page=1, post_id=post.id) }}">[Remove]</a>
 </p>
 {% endfor %}
 

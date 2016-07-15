@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<form method="post" action="{{ url_for('comment') }}">
+<form method="post" action="{{ url_for('comment', post_id=post_id) }}">
 	<label>Content</label>
 	<br>
-	<input type="text" name="title" id="title">
+	<input type="text" name="content" id="content">
 	<br><br>
 	<label>Author</label>
 	<br>
