@@ -1,14 +1,12 @@
 {% extends "layout.html" %}
-
 {% block content %}
-<h3>Sign in</h3>
+{% if wrong %}
+<p style="color: red">Wrong username or password! Try again.</p>
+{% endif %}
 <form action="" method="post" name="login">
 	{{ form.hidden_tag() }}
-	<p>id: {{ form.openid(size=50) }}</p>
-	{% for error in form.openid.errors %}
-		<span>[{{ error}}]</span>
-	{% endfor %}
-	<p>{{ form.remember_me }} Remember Me</p>
-	<p><input type="submit" value="sign in"></p>
+	<p>Nickname: {{ form.nickname }}</p>
+	<p>Password: {{ form.password }}</p>
+	<p><input type="submit" value="Sign in"></p>
 </form>
 {% endblock %}

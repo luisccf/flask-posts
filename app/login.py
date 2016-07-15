@@ -1,0 +1,1 @@
+from app import app, models, login_manager, views

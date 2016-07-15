@@ -1,6 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
-<p>Welcome, {{ user.nickname }}</p>
+{% if user %}
+<p style="color: green">Welcome, {{ user.nickname }}</p>
+{% else %}
+<a href="{{ url_for('login') }}">Login</a>
+<br>
+{% endif %}
 <a href="{{ url_for('user', nickname=user.nickname) }}">View your posts</a>
 <br>
 <a href="{{ url_for('add') }}">Post something</a>

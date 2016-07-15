@@ -1,5 +1,6 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, abort
 from app import app, db, models
+from forms import LoginForm
 import datetime
 
 @app.route('/')
@@ -61,9 +62,35 @@ def comment(post_id):
 def add_user():
 	if request.method == 'POST':
 		user = request.form.to_dict()
-		db.session.add(models.User(nickname=user['nickname']))
+		db.session.add(models.User(nickname=user['nickname'], password=user['password']))
 		db.session.commit()
 		return redirect(url_for('users'))
 	return render_template('add_user.html', title='Sign up', header='Sign up')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	form = LoginForm()
+	if request.method == 'POST':
+		if form.validate_on_submit():
+			user = user_logging_in(form)
+			if user is None:
+				return render_template('login.html', form=form, wrong=True)
+			return render_template('index.html', title='Home', header='App', user=user)
+			#response = form.to_dict()
+			#user = db.session.query(models.User).filter_by(nickname=response['nickname']).first()
+			#login_user(user)
+			#next = flask.request.args.get('next')
+			#if not next_is_valid(next):
+			#	return flask.abort(400)
+			#return redirect(url_for('index'))
+	return render_template('login.html', form=form, wrong=False)
+
+def user_logging_in(form):
+	user = db.session.query(models.User).filter_by(nickname=form.nickname.data).first()
+	if user is None or form.password.data != user.password:
+		return None
+	return user
+
+
 
 
