@@ -6,14 +6,6 @@
 	<br>
 	<input type="text" name="title" id="title">
 	<br><br>
-	<label>Author</label>
-	<br>
-	<select name="author" id="author">
-		{% for user in users %}
-			<option value="{{user.id}}">{{ user.nickname }}</option>
-		{% endfor %}
-	</select>
-	<br><br>
 	<button type="submit">Post</button>
 </form>
 

@@ -8,11 +8,13 @@ import datetime
 def index():
 	return render_template('index.html', title='Home', header='App')
 
-@app.route('/add', methods=['GET', 'POST'])
+@app.route('/posts/add', methods=['GET', 'POST'])
 def add():
+	if current_user.is_authenticated == False:
+		return render_template('error.html', error='Please login to post.')
 	if request.method == 'POST':
 		post = request.form.to_dict()
-		new_post = models.Post(title=post['title'], timestamp=datetime.datetime.utcnow(), user_id=post['author'])
+		new_post = models.Post(title=post['title'], timestamp=datetime.datetime.utcnow(), user_id=current_user.id)
 		db.session.add(new_post)
 		db.session.commit()
 		return redirect(url_for('posts'))
@@ -28,8 +30,10 @@ def post(post_id):
 	#import pdb; pdb.set_trace()
 	return render_template('post.html', title=post.title, header=post.title, post=post)
 	
-@app.route('/posts/remove/<int:user_page>/<int:post_id>')
+@app.route('/posts/<int:post_id>/remove-<int:user_page>')
 def remove(post_id, user_page):
+	if current_user.is_authenticated is False or current_user.id != models.Post.query.get(post_id).author.id:
+		return render_template('error.html', error='You can\'t remove somebody else\'s post.')
 	post = models.Post.query.get(post_id)
 	user = post.author
 	db.session.delete(post)
@@ -48,10 +52,11 @@ def user(nickname):
 
 @app.route('/posts/<int:post_id>/comment', methods=['GET', 'POST'])
 def comment(post_id):
+	if current_user.is_authenticated is False:
+		return render_template('error.html', error='Please login to comment.')
 	if request.method == 'POST':
 		comment = request.form.to_dict()
-		author = models.User.query.get(comment['author'])
-		new_comment = models.Comment(user_id=author.id, post_id=post_id, content=comment['content'])
+		new_comment = models.Comment(user_id=current_user.id, post_id=post_id, content=comment['content'])
 		db.session.add(new_comment)
 		db.session.commit()
 		post = models.Post.query.get(post_id)
@@ -60,6 +65,8 @@ def comment(post_id):
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+	if current_user.is_authenticated is True:
+		return render_template('error.html', error='You\'re already logged in')
 	form = LoginForm()
 	if request.method == 'POST':
 		if form.validate_on_submit():
@@ -76,6 +83,8 @@ def signup():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+	if current_user.is_authenticated is True:
+		return render_template('error.html', error='You\'re already logged in')
 	form = LoginForm()
 	if request.method == 'POST':
 		if form.validate_on_submit():
