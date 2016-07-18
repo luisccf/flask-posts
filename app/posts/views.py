@@ -24,6 +24,8 @@ def posts():
 @mod.route('/posts/<int:post_id>')
 def post(post_id):
 	post = models.Post.query.get(post_id)
+	if post is None:
+		return render_template('error.html', error='No post with id ' + str(post_id))
 	#import pdb; pdb.set_trace()
 	return render_template('post.html', title=post.title, header=post.title, post=post)
 	
