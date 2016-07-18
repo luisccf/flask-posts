@@ -4,10 +4,10 @@
 <p>
 	[{{ post.timestamp.strftime('%d/%m/%y %H:%M') }}]
 	<br>
-	<strong><a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></strong>
+	<strong><a href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></strong>
 	<small>by {{ post.author.nickname }}</small>
 	{% if post.author.id == current_user.id %}
-	<br><a href="{{ url_for('remove', user_page=1, post_id=post.id) }}">[Remove]</a>
+	<br><a href="{{ url_for('posts.remove', user_page=1, post_id=post.id) }}">[Remove]</a>
 	{% endif %}
 </p>
 {% else %}
