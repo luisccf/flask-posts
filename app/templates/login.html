@@ -1,8 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-{% if wrong %}
-<p style="color: red">Wrong username or password! Try again.</p>
-{% endif %}
+<p style="color: red">{{ message }}</p>
 <form action="" method="post" name="login">
 	{{ form.hidden_tag() }}
 	<p>Nickname: {{ form.nickname }}</p>

@@ -7,7 +7,12 @@
 	<nav>
 		<a href="{{ url_for('index') }}">Home</a> |
 		<a href="{{ url_for('users') }}">Users</a> | 
-		<a href="{{ url_for('posts') }}">Posts</a>
+		<a href="{{ url_for('posts') }}">Posts</a> |
+		{% if current_user.is_authenticated %}
+			<a href="{{ url_for('logout') }}">Logout</a>
+		{% else %}
+			<a href="{{ url_for('login') }}">Login</a>
+		{% endif %}
 	</nav>
 	<hr>
 	<h3> {{ header }} </h3>

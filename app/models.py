@@ -10,6 +10,24 @@ class User(db.Model):
 	def __repr__(self):
 		return 'nickname: ' + self.nickname
 
+	@property
+	def is_authenticated(self):
+		return True
+
+	@property
+	def is_active(self):
+		return True
+
+	@property
+	def is_anonymous(self):
+		return False
+
+	def get_id(self):
+		try:
+			return unicode(self.id)
+		except NameError:
+			return str(self.id)  # python 3
+
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	title = db.Column(db.String(64))
