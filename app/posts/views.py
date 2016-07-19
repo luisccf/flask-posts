@@ -11,7 +11,7 @@ def add():
 		return render_template('error.html', error='Please login to post.')
 	if request.method == 'POST':
 		post = request.form.to_dict()
-		new_post = models.Post(title=post['title'], timestamp=datetime.datetime.utcnow(), user_id=current_user.id)
+		new_post = models.Post(text=post['text'], timestamp=datetime.datetime.utcnow(), user_id=current_user.id)
 		db.session.add(new_post)
 		db.session.commit()
 		return redirect(url_for('posts.posts'))
@@ -27,7 +27,7 @@ def post(post_id):
 	if post is None:
 		return render_template('error.html', error='No post with id ' + str(post_id))
 	#import pdb; pdb.set_trace()
-	return render_template('post.html', title=post.title, header=post.title, post=post)
+	return render_template('post.html', title=post.text, header=post.text, post=post)
 	
 @mod.route('/posts/<int:post_id>/remove-<int:user_page>')
 def remove(post_id, user_page):
@@ -47,7 +47,7 @@ def comment(post_id):
 		return render_template('error.html', error='Please login to comment.')
 	if request.method == 'POST':
 		comment = request.form.to_dict()
-		new_comment = models.Comment(user_id=current_user.id, post_id=post_id, content=comment['content'])
+		new_comment = models.Comment(user_id=current_user.id, post_id=post_id, text=comment['text'])
 		db.session.add(new_comment)
 		db.session.commit()
 		post = models.Post.query.get(post_id)
