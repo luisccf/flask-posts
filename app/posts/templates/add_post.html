@@ -1,12 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
-
-<form method="post" action="{{ url_for('posts.add') }}">
-	<label>Text</label>
-	<br>
-	<input type="text" name="title" id="title">
-	<br><br>
-	<button type="submit">Post</button>
+<p style="color: red">{{ message }}</p>
+<form action="" method="post" name="login">
+	{{ form.hidden_tag() }}
+	<p>Text: {{ form.text(size=140) }}</p>
+	<p><input type="submit" value="Post"></p>
 </form>
-
 {% endblock %}

@@ -1,5 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request, abort, Blueprint
 from app import app, db, models, login_manager
+from forms import PostForm
 from flask_login import login_user, logout_user, current_user, login_required
 import datetime
 
@@ -9,13 +10,18 @@ mod = Blueprint('posts', __name__, static_folder='./content', template_folder='.
 def add():
 	if current_user.is_authenticated == False:
 		return render_template('error.html', error='Please login to post.')
+	form = PostForm()
 	if request.method == 'POST':
-		post = request.form.to_dict()
-		new_post = models.Post(title=post['title'], timestamp=datetime.datetime.utcnow(), user_id=current_user.id)
-		db.session.add(new_post)
-		db.session.commit()
-		return redirect(url_for('posts.posts'))
-	return render_template('add_post.html', title='Add Post', header='New post', users=models.User.query.all())
+		if form.validate_on_submit():
+			response = request.form.to_dict()
+			if len(response['text']) > 140:
+				return render_template('add_post.html', title='Add Post', header='New post', users=models.User.query.all(), form=form, message='Post too long.')
+			post = models.Post(text=response['text'], timestamp=datetime.datetime.utcnow(), user_id=current_user.id)
+			db.session.add(post)
+			db.session.commit()
+			return redirect(url_for('posts.posts'))
+		return render_template('add_post.html', title='Add Post', header='New post', users=models.User.query.all(), form=form, message='You haven\'t typed anything.')
+	return render_template('add_post.html', title='Add Post', header='New post', users=models.User.query.all(), form=form)
 
 @mod.route('/posts')
 def posts():
@@ -27,7 +33,7 @@ def post(post_id):
 	if post is None:
 		return render_template('error.html', error='No post with id ' + str(post_id))
 	#import pdb; pdb.set_trace()
-	return render_template('post.html', title=post.title, header=post.title, post=post)
+	return render_template('post.html', title=post.text, header=post.text, post=post)
 	
 @mod.route('/posts/<int:post_id>/remove-<int:user_page>')
 def remove(post_id, user_page):
@@ -47,7 +53,7 @@ def comment(post_id):
 		return render_template('error.html', error='Please login to comment.')
 	if request.method == 'POST':
 		comment = request.form.to_dict()
-		new_comment = models.Comment(user_id=current_user.id, post_id=post_id, content=comment['content'])
+		new_comment = models.Comment(user_id=current_user.id, post_id=post_id, text=comment['text'])
 		db.session.add(new_comment)
 		db.session.commit()
 		post = models.Post.query.get(post_id)

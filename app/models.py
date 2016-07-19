@@ -1,6 +1,7 @@
 from app import db
 
 class User(db.Model):
+	__tablename__ = 'Users'
 	id = db.Column(db.Integer, primary_key=True)
 	nickname = db.Column(db.String(64), index=True, unique=True)
 	password = db.Column(db.String(64))
@@ -29,20 +30,22 @@ class User(db.Model):
 			return str(self.id)  # python 3
 
 class Post(db.Model):
+	__tablename__ = 'Posts'
 	id = db.Column(db.Integer, primary_key=True)
-	title = db.Column(db.String(64))
+	text = db.Column(db.String(140))
 	timestamp = db.Column(db.DateTime)
-	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
 	comments = db.relationship('Comment', backref='post', lazy='dynamic', cascade='all, delete-orphan') 
 
 	def __repr__(self):
-		return 'title: ' + self.title + ', id: ' + str(self.id)
+		return 'title: ' + self.text + ', id: ' + str(self.id)
 
 class Comment(db.Model):
+	__tablename__ = 'Comments'
 	id = db.Column(db.Integer, primary_key=True)
-	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-	post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
-	content = db.Column(db.String(64))
+	user_id = db.Column(db.Integer, db.ForeignKey('Users.id'))
+	post_id = db.Column(db.Integer, db.ForeignKey('Posts.id'))
+	text = db.Column(db.String(140))
 
 	def __repr__(self):
-		return 'id: ' + str(self.id) + ', title: ' + self.content
+		return 'id: ' + str(self.id) + ', title: ' + self.text
