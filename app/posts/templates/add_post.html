@@ -1,9 +1,21 @@
 {% extends "layout.html" %}
 {% block content %}
-<p style="color: red">{{ message }}</p>
-<form action="" method="post" name="login">
-	{{ form.hidden_tag() }}
-	<p>Text: {{ form.text(size=140) }}</p>
-	<p><input type="submit" value="Post"></p>
-</form>
+
+{% if message %}
+<div class="alert alert-danger" role="alert">
+	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+	<span class="sr-only">Error:</span>
+	{{ message }}
+</div>
+{% endif %}
+
+<div class="col-sm-6">
+	<form class="form-group" action="" method="post" name="login">
+		{{ form.hidden_tag() }}
+		<label class="control-label">Text</label>
+		<p>{{ form.text(class_="form-control") }}</p>
+		<p><input class="btn btn-default" type="submit" value="Post"></p>
+	</form>
+</div>
+
 {% endblock %}

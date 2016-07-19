@@ -1,11 +1,7 @@
-body {
-	font-family: Helvetica;
+.post-btn {
+	color: black;
 }
 
-a {
+.post-btn:hover {
 	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
 }

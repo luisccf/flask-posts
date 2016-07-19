@@ -1,17 +1,35 @@
 {% extends "layout.html" %}
+
 {% block content %}
-{% for post in user.posts %}
-<p>
-	[{{ post.timestamp.strftime('%d/%m/%y %H:%M') }}]
-	<br>
-	<strong><a href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.text }}</a></strong>
-	<small>by {{ post.author.nickname }}</small>
-	{% if post.author.id == current_user.id %}
-	<br><a href="{{ url_for('posts.remove', user_page=1, post_id=post.id) }}">[Remove]</a>
-	{% endif %}
-</p>
+
+{% if current_user.is_authenticated %}
+<div class="row" style="margin-bottom: 20px;">
+	<div class="col-sm-2">
+		<a class="btn btn-default" href="{{ url_for('posts.add') }}">Add Post</a>
+	</div>
+</div>
+{% endif %}
+<div class="row">
+	{% for post in user.posts %}
+	<div class="col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<strong>{{ post.author.nickname }}</strong>
+				<small> {{ post.timestamp.strftime('%d/%m/%y %H:%M') }}</small>
+			</div>
+			<div class="panel-body">
+				<p>{{ post.text }}</p>
+				<a href="{{ url_for('posts.post', post_id=post.id) }}">View</a>
+				<a href="{{ url_for('posts.comment', post_id=post.id) }}">Comment</a>
+				{% if post.author.id == current_user.id %}
+				<a href="{{ url_for('posts.remove', user_page=1, post_id=post.id) }}">Remove</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
 {% else %}
-<p>No posts from {{user.nickname}}!</p>
+<p>No posts from {{ user.nickname }}!</p>
 {% endfor %}
+</div>
 
 {% endblock %}

@@ -1,20 +1,46 @@
 {% extends "layout.html" %}
+
 {% block content %}
+
 {% if current_user.is_authenticated %}
-<a href="{{ url_for('posts.add') }}">[Add Post]</a>
+<div class="row" style="margin-bottom: 20px;">
+	<div class="col-sm-2">
+		<a class="btn btn-default" href="{{ url_for('posts.add') }}">Add Post</a>
+	</div>
+</div>
 {% endif %}
-{% for post in posts %}
-<p>
-	[{{ post.timestamp.strftime('%d/%m/%y %H:%M') }}]
-	<br>
-	<strong><a href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.text }}</a></strong>
-	<small>by {{ post.author.nickname }}</small>
-	{% if post.author.id == current_user.id %}
-	<br><a href="{{ url_for('posts.remove', user_page=0, post_id=post.id) }}">[Remove]</a>
-	{% endif %}
-</p>
+<div class="row">
+	{% for post in posts %}
+	<div class="col-lg-4 col-md-6 col-sm-6">
+		<div class="panel panel-default">
+			<div class="panel-heading clearfix">
+				<h5 class="panel-tile pull-left"><strong><a href="{{ url_for('users.user', nickname=post.author.nickname) }}">{{ post.author.nickname }}</a></strong>
+				<small> {{ post.timestamp.strftime('%d/%m/%y %H:%M') }}</small></h5>
+				<div class="pull-right">
+					<a class="btn btn-default" title="View" href="{{ url_for('posts.post', post_id=post.id) }}">
+						<span class="glyphicon glyphicon-eye-open"></span>
+					</a>
+					<a class="btn btn-default" title="Comment" href="{{ url_for('posts.comment', post_id=post.id) }}">
+						<span class="glyphicon glyphicon-comment"></span>
+					</a>
+					{% if post.author.id == current_user.id %}
+					<a class="btn btn-default" title="Remove" href="{{ url_for('posts.remove', user_page=user_page, post_id=post.id) }}">
+						<span class="glyphicon glyphicon-trash"></span>
+					</a>
+					{% endif %}
+				</div>
+			</div>
+			<div class="panel-body">
+				<p>{{ post.text }}</p>
+				
+			</div>
+		</div>
+	</div>
 {% else %}
-<p>No posts at all!</p>
+<div class="col-lg-4 col-md-6 col-sm-6">
+	No posts yet!
+</div>
 {% endfor %}
+</div>
 
 {% endblock %}

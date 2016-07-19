@@ -1,10 +1,21 @@
 {% extends "layout.html" %}
 {% block content %}
-<p style="color: red">{{ message }}</p>
-<form action="" method="post" name="login">
+
+{% if message %}
+<div class="alert alert-danger" role="alert">
+	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+	<span class="sr-only">Error:</span>
+	{{ message }}
+</div>
+{% endif %}
+<div class="col-sm-4">
+<form class="form-group" action="" method="post" name="login">
 	{{ form.hidden_tag() }}
-	<p>Nickname: {{ form.nickname }}</p>
-	<p>Password: {{ form.password }}</p>
-	<p><input type="submit" value="Sign in"></p>
+	<label class="control-label">Nickname</label>
+	<p>{{ form.nickname(class_="form-control") }}</p>
+	<label class="control-label">Password</label>
+	<p>{{ form.password(class_="form-control") }}</p>
+	<p><input class="btn btn-default" type="submit" value="{{ title }}"></p>
 </form>
+</div>
 {% endblock %}

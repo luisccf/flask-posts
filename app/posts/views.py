@@ -4,41 +4,41 @@ from forms import PostForm
 from flask_login import login_user, logout_user, current_user, login_required
 import datetime
 
-mod = Blueprint('posts', __name__, static_folder='./content', template_folder='./templates')
+mod = Blueprint('posts', __name__, static_folder='./static', template_folder='./templates')
 
 @mod.route('/posts/add', methods=['GET', 'POST'])
 def add():
 	if current_user.is_authenticated == False:
-		return render_template('error.html', error='Please login to post.')
+		return render_template('error.html', title='Error', error='Please login to post.')
 	form = PostForm()
 	if request.method == 'POST':
 		if form.validate_on_submit():
 			response = request.form.to_dict()
 			if len(response['text']) > 140:
-				return render_template('add_post.html', title='Add Post', header='New post', users=models.User.query.all(), form=form, message='Post too long.')
+				return render_template('add_post.html', title='Add Post', users=models.User.query.all(), form=form, message='Post too long.')
 			post = models.Post(text=response['text'], timestamp=datetime.datetime.utcnow(), user_id=current_user.id)
 			db.session.add(post)
 			db.session.commit()
 			return redirect(url_for('posts.posts'))
-		return render_template('add_post.html', title='Add Post', header='New post', users=models.User.query.all(), form=form, message='You haven\'t typed anything.')
+		return render_template('add_post.html', title='Add Post', users=models.User.query.all(), form=form, message='You haven\'t typed anything.')
 	return render_template('add_post.html', title='Add Post', header='New post', users=models.User.query.all(), form=form)
 
 @mod.route('/posts')
 def posts():
-	return render_template('posts.html', title='Posts', header='All Posts', posts=models.Post.query.all())
+	return render_template('posts.html', title='All Posts', posts=models.Post.query.all(), user_page=0)
 
 @mod.route('/posts/<int:post_id>')
 def post(post_id):
 	post = models.Post.query.get(post_id)
 	if post is None:
-		return render_template('error.html', error='No post with id ' + str(post_id))
+		return render_template('error.html', title='Error', error='No post with id ' + str(post_id))
 	#import pdb; pdb.set_trace()
-	return render_template('post.html', title=post.text, header=post.text, post=post)
+	return render_template('post.html', title='Post', post=post)
 	
 @mod.route('/posts/<int:post_id>/remove-<int:user_page>')
 def remove(post_id, user_page):
 	if current_user.is_authenticated is False or current_user.id != models.Post.query.get(post_id).author.id:
-		return render_template('error.html', error='You can\'t remove somebody else\'s post.')
+		return render_template('error.html', title='Error', error='You can\'t remove somebody else\'s post.')
 	post = models.Post.query.get(post_id)
 	user = post.author
 	db.session.delete(post)
@@ -50,15 +50,16 @@ def remove(post_id, user_page):
 @mod.route('/posts/<int:post_id>/comment', methods=['GET', 'POST'])
 def comment(post_id):
 	if current_user.is_authenticated is False:
-		return render_template('error.html', error='Please login to comment.')
+		return render_template('error.html', title='Error', error='Please login to comment.')
+	form = PostForm()
 	if request.method == 'POST':
-		comment = request.form.to_dict()
-		new_comment = models.Comment(user_id=current_user.id, post_id=post_id, text=comment['text'])
-		db.session.add(new_comment)
+		if form.validate_on_submit():
+			comment = models.Comment(user_id=current_user.id, post_id=post_id, text=form.text.data)
+		db.session.add(comment)
 		db.session.commit()
 		post = models.Post.query.get(post_id)
 		return redirect(url_for('posts.post', post_id=post_id))
-	return render_template('comment.html', title='Add comment', header='Add comment', users=models.User.query.all(), post_id=post_id)
+	return render_template('add_post.html', title='Add comment', post_id=post_id, form=form)
 
 
 
