@@ -48,4 +48,4 @@ class Comment(db.Model):
 	text = db.Column(db.String(140))
 
 	def __repr__(self):
-		return 'id: ' + str(self.id) + ', title: ' + self.content
+		return 'id: ' + str(self.id) + ', title: ' + self.text
