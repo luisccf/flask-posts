@@ -1,4 +1,4 @@
-# flask-wtf
+# flask-posts
 ### MySQL Server
 ```
 mysql.server start
