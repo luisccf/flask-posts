@@ -1,13 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
 
-{% if message %}
-<div class="alert alert-danger" role="alert">
-	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-	<span class="sr-only">Error:</span>
-	{{ message }}
-</div>
+{% if get_flashed_messages(with_categories=true) %}
+	{% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{ category }} alert-dismissable animated fadeInDown">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+        {{ message }}
+    </div>
+	{% endfor %}
 {% endif %}
+
 <div class="col-sm-4">
 <form class="form-group" action="" method="post" name="login">
 	{{ form.hidden_tag() }}
@@ -18,4 +20,5 @@
 	<p><input class="btn btn-default" type="submit" value="{{ title }}"></p>
 </form>
 </div>
+
 {% endblock %}

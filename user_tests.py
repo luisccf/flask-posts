@@ -6,6 +6,7 @@ import factory
 from app.models import User
 from faker import Faker
 
+
 class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = User

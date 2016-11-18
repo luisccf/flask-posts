@@ -21,13 +21,15 @@ def signup():
 		if form.validate_on_submit():
 			response = request.form.to_dict()
 			if db.session.query(models.User).filter_by(nickname=response['nickname']).first():
-				return render_template('login.html', title='Sign up', form=form, message='Nickname already taken!'), 401
+				flash('Nickname already taken!', 'danger')
+				return render_template('login.html', title='Sign up', form=form), 401
 			user = models.User(nickname=response['nickname'], password=response['password'])
 			db.session.add(user)
 			db.session.commit()
 			login_user(user)
 			return redirect(url_for('home.index'))
-		return render_template('login.html', title='Sign up', form=form, message='Please enter nickname and password!'), 402
+		flash('Please enter a nickname and a password!', 'danger')
+		return render_template('login.html', title='Sign up', form=form), 402
 	return render_template('login.html', title='Sign up', header='Sign up', form=form)
 
 @mod.route('/login', methods=['GET', 'POST'])
@@ -37,10 +39,12 @@ def login():
 		if form.validate_on_submit():
 			user = user_logging_in(form)
 			if user is None:
-				return render_template('login.html', title='Login', form=form, message='Wrong username or password!'), 401
+				flash('Wrong username or password!', 'danger')
+				return render_template('login.html', title='Login', form=form), 401
 			login_user(user)
 			return render_template('index.html', title='Home', header='App', user=user), 200
-		return render_template('login.html', title='Login', form=form, message='Please enter nickname and password!'), 402
+		flash('Please enter a nickname and a password!', 'danger')
+		return render_template('login.html', title='Login', form=form), 402
 	return render_template('login.html', title='Login', form=LoginForm())
 
 def user_logging_in(form):
