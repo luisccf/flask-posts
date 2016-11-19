@@ -1,6 +1,7 @@
 import unittest
 import os
 import sqlalchemy
+import sys
 from app import app, db
 import factory
 from app.models import User
@@ -16,10 +17,14 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     password = '123456'
 
 
-class TestDB(unittest.TestCase):
+class TestUser(unittest.TestCase):
     def setUp(self):
         self.tester = app.test_client(self)
-        app.config['WTF_CSRF_ENABLED'] = False    
+        app.config['WTF_CSRF_ENABLED'] = False
+
+
+    def tearDown(self):
+        pass
 
 
     def login(self, nickname, password):
@@ -45,22 +50,27 @@ class TestDB(unittest.TestCase):
         # Login and logout with success
         response = self.login('admin', 'password')
         self.assertEqual(response.status_code, 200)
+
         response = self.logout()
         self.assertEqual(response.status_code, 200)
 
         # Wrong username or password
         response = self.login('admin', '123456')
         self.assertEqual(response.status_code, 401)
+
         response = self.login('123456', '123456')
         self.assertEqual(response.status_code, 401)
 
         # Form has blank fields
         response = self.login('', 'password')
         self.assertEqual(response.status_code, 402)
+
         response = self.login('admin', '')
         self.assertEqual(response.status_code, 402)
+
         response = self.login('', '')
         self.assertEqual(response.status_code, 402)
+
 
 
     def test_signup_and_login(self):
@@ -71,6 +81,10 @@ class TestDB(unittest.TestCase):
 
         response = self.logout()
         self.assertEqual(response.status_code, 200)
+
+        # Fail login
+        response = self.login(nickname, '123')
+        self.assertEqual(response.status_code, 401)
 
         # Login with success
         response = self.login(nickname, '123456')
