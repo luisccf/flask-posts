@@ -14,7 +14,7 @@ With virtualenvwrapper installed, run
 mkvirtualenv <name>
 ```
 ### Environment variables
-Add env variables to ```./virtualenvs/<env-name>/bin/activate```
+Add env variables to ```$HOME/.virtualenvs/<env-name>/bin/activate```
 ```
 FP_DATABASE_URI='mysql+pymysql://<db-user>:<db-password>@localhost/<db-schema>'
 export FP_DATABASE_URI
