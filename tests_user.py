@@ -16,10 +16,11 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     password = '123456'
 
 
-class TestDB(unittest.TestCase):
+class TestUser(unittest.TestCase):
     def setUp(self):
         self.tester = app.test_client(self)
-        app.config['WTF_CSRF_ENABLED'] = False    
+        app.config['WTF_CSRF_ENABLED'] = False
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost/flask_posts_tests'
 
 
     def login(self, nickname, password):
@@ -78,7 +79,3 @@ class TestDB(unittest.TestCase):
 
         response = self.logout()
         self.assertEqual(response.status_code, 200)
-
-
-if __name__ == '__main__':
-    unittest.main()

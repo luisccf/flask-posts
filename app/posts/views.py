@@ -13,6 +13,7 @@ mod = Blueprint(
 @login_required
 def add():
     form = PostForm()
+    status = 200
     if request.method == 'POST':
         if form.validate_on_submit():
             post = models.Post(
@@ -20,7 +21,8 @@ def add():
             db.session.add(post)
             db.session.commit()
             return redirect(url_for('posts.posts'))
-    return render_template('add_post.html', title='Add Post', users=models.User.query.all(), form=form)
+     	status = 400
+    return render_template('add_post.html', title='Add Post', users=models.User.query.all(), form=form), status
 
 
 @mod.route('/posts')
