@@ -4,6 +4,7 @@ import sqlalchemy
 from app import app, db
 import factory
 from app.models import Post, User
+from config import SQLALCHEMY_DATABASE_URI
 from faker import Faker
 
 
@@ -13,7 +14,8 @@ class TestPost(unittest.TestCase):
         self.tester = app.test_client(self)
         app.config['WTF_CSRF_ENABLED'] = False
         app.config[
-            'SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost/flask_posts_tests'
+            'SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+
 
     def add_post(self, text):
         return self.tester.post('/posts/add', data=dict(

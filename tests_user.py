@@ -5,6 +5,7 @@ import sys
 from app import app, db
 import factory
 from app.models import User
+from config import SQLALCHEMY_DATABASE_URI
 from faker import Faker
 
 
@@ -21,7 +22,7 @@ class TestUser(unittest.TestCase):
     def setUp(self):
         self.tester = app.test_client(self)
         app.config['WTF_CSRF_ENABLED'] = False
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost/flask_posts_tests'
+        app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 
 
     def login(self, nickname, password):
