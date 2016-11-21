@@ -7,9 +7,8 @@ import datetime
 mod = Blueprint('posts', __name__, static_folder='./static', template_folder='./templates')
 
 @mod.route('/posts/add', methods=['GET', 'POST'])
+@login_required
 def add():
-	if current_user.is_authenticated == False:
-		return render_template('error.html', title='Error', error='Please login to post.')
 	form = PostForm()
 	if request.method == 'POST':
 		if form.validate_on_submit():
@@ -32,13 +31,14 @@ def post(post_id):
 	post = models.Post.query.get(post_id)
 	if post is None:
 		return render_template('error.html', title='Error', error='No post with id ' + str(post_id))
-	#import pdb; pdb.set_trace()
 	return render_template('post.html', title='Post', post=post)
-	
+
+
 @mod.route('/posts/<int:post_id>/remove-<int:user_page>')
+@login_required
 def remove(post_id, user_page):
-	if current_user.is_authenticated is False or current_user.id != models.Post.query.get(post_id).author.id:
-		return render_template('error.html', title='Error', error='You can\'t remove somebody else\'s post.')
+	if current_user.id != models.Post.query.get(post_id).author.id:
+		return 401
 	post = models.Post.query.get(post_id)
 	user = post.author
 	db.session.delete(post)
@@ -48,9 +48,8 @@ def remove(post_id, user_page):
 	return redirect(url_for('posts.posts'))
 
 @mod.route('/posts/<int:post_id>/comment', methods=['GET', 'POST'])
+@login_required
 def comment(post_id):
-	if current_user.is_authenticated is False:
-		return render_template('error.html', title='Error', error='Please login to comment.')
 	form = PostForm()
 	if request.method == 'POST':
 		if form.validate_on_submit():
