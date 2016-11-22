@@ -14,7 +14,7 @@ class TestPost(unittest.TestCase):
         self.tester = app.test_client(self)
         app.config['WTF_CSRF_ENABLED'] = False
         app.config[
-            'SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+            'SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI + '_tests'
         
         user = User(nickname='admin', password='password')
         db.session.add(user)
