@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block content %}
 {% for user in users %}
 <p><a href="{{ url_for('users.user', nickname=user.nickname) }}">{{ user.nickname }}</p>

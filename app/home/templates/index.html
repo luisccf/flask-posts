@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block content %}
 
 {% if current_user.is_authenticated %}
@@ -30,12 +30,12 @@
 <div class="col-lg-4 col-md-6 col-sm-6">
 	<div class="alert alert-info" role="alert">
 		<span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
-		<a href="{{ url_for('users.login') }}"> Login</a>
+		<a href="{{ url_for('users.login_get') }}"> Login</a>
 	</div>
 
 	<div class="alert alert-info">
 		<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-		<a href="{{ url_for('users.signup') }}"> Sign up</a>
+		<a href="{{ url_for('users.signup_get') }}"> Sign up</a>
 	</div>
 </div>
 

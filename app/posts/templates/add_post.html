@@ -1,13 +1,13 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block content %}
 
-{% if message %}
+{% for error in form.text.errors %}
 <div class="alert alert-danger" role="alert">
 	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-	<span class="sr-only">Error:</span>
-	{{ message }}
+	<span class="sr-only"></span>
+	{{ error }}
 </div>
-{% endif %}
+{% endfor %}
 
 <div class="col-sm-6">
 	<form class="form-group" action="" method="post" name="login">
