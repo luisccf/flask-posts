@@ -33,19 +33,23 @@ def signup_post():
 		db.session.commit()
 		login_user(user)
 		return redirect(url_for('home.index'))
-	return render_template('login.html', title='Sign up', form=form), 402
+	return render_template('login.html', title='Sign up', form=form), 400
 
 
-@mod.route('/login', methods=['GET', 'POST'])
-def login():
+@mod.route('/login', methods=['GET'])
+def login_get():
 	form = LoginForm()
-	if request.method == 'POST':
-		if form.validate_on_submit():
-			user = models.User.query.filter_by(nickname=form.nickname.data).first()
-			login_user(user)
-			return render_template('index.html', title='Home', user=user)
-		return render_template('login.html', title='Login', form=form), 402
 	return render_template('login.html', title='Login', form=form)
+
+
+@mod.route('/login', methods=['POST'])
+def login_post():
+	form = LoginForm()
+	if form.validate_on_submit():
+		user = models.User.query.filter_by(nickname=form.nickname.data).first()
+		login_user(user)
+		return render_template('index.html', title='Home', user=user)
+	return render_template('login.html', title='Login', form=form), 400
 
 
 @mod.route('/logout')

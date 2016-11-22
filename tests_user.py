@@ -65,20 +65,20 @@ class TestUser(unittest.TestCase):
 
         # Wrong username or password
         response = self.login('admin', '123456')
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
 
         response = self.login('123456', '123456')
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
 
         # Form has blank fields
         response = self.login('', 'password')
-        self.assertEqual(response.status_code, 402)
+        self.assertEqual(response.status_code, 400)
 
         response = self.login('admin', '')
-        self.assertEqual(response.status_code, 402)
+        self.assertEqual(response.status_code, 400)
 
         response = self.login('', '')
-        self.assertEqual(response.status_code, 402)
+        self.assertEqual(response.status_code, 400)
 
 
     def test_signup_and_login(self):
@@ -92,7 +92,7 @@ class TestUser(unittest.TestCase):
 
         # Fail login
         response = self.login(nickname, '123')
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
 
         # Login with success
         response = self.login(nickname, '123456')
@@ -100,3 +100,14 @@ class TestUser(unittest.TestCase):
 
         response = self.logout()
         self.assertEqual(response.status_code, 200)
+
+        # Fail signup because user already exists
+        response = self.signup('admin', '123456')
+        self.assertEqual(response.status_code, 400)
+
+        # Fail signup because form has blank fields
+        response = self.signup('', '')
+        self.assertEqual(response.status_code, 400)
+
+        response = self.signup('', '123456')
+        self.assertEqual(response.status_code, 400)
