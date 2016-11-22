@@ -3,7 +3,7 @@ import os
 import sqlalchemy
 from app import app, db
 import factory
-from app.models import Post, User
+from app.models import Post, User, Comment
 from config import SQLALCHEMY_DATABASE_URI
 from faker import Faker
 
@@ -15,6 +15,17 @@ class TestPost(unittest.TestCase):
         app.config['WTF_CSRF_ENABLED'] = False
         app.config[
             'SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+        
+        user = User(nickname='admin', password='password')
+        db.session.add(user)
+        db.session.commit()
+
+
+    def tearDown(self):
+        Comment.query.delete()
+        Post.query.delete()
+        User.query.delete()
+        db.session.commit()
 
 
     def add_post(self, text):
@@ -47,7 +58,7 @@ class TestPost(unittest.TestCase):
 
         # Fails because text is longer than 140 characters
         text = faker.text(max_nb_chars=200)
-        while 0 <= text <= 140:
+        while 0 <= len(text) <= 140:
             text = faker.text(max_nb_chars=200)
         response = self.add_post(text)
         self.assertEqual(response.status_code, 400)

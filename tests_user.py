@@ -4,7 +4,7 @@ import sqlalchemy
 import sys
 from app import app, db
 import factory
-from app.models import User
+from app.models import User, Post, Comment
 from config import SQLALCHEMY_DATABASE_URI
 from faker import Faker
 
@@ -23,6 +23,17 @@ class TestUser(unittest.TestCase):
         self.tester = app.test_client(self)
         app.config['WTF_CSRF_ENABLED'] = False
         app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+
+        user = User(nickname='admin', password='password')
+        db.session.add(user)
+        db.session.commit()
+
+
+    def tearDown(self):
+        Comment.query.delete()
+        Post.query.delete()
+        User.query.delete()
+        db.session.commit()
 
 
     def login(self, nickname, password):
