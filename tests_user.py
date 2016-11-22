@@ -81,7 +81,6 @@ class TestUser(unittest.TestCase):
         self.assertEqual(response.status_code, 402)
 
 
-
     def test_signup_and_login(self):
         # Sign up with success
         nickname = Faker().name()

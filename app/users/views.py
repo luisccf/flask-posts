@@ -4,48 +4,54 @@ from forms import LoginForm
 from flask_login import login_user, logout_user, current_user, login_required
 import datetime
 
+
 mod = Blueprint('users', __name__, static_folder='./static', template_folder='./templates')
+
 
 @mod.route('/users')
 def users():
 	return render_template('users.html', title='Users', users=models.User.query.all())
 
+
 @mod.route('/users/<nickname>')
 def user(nickname):
 	return render_template('posts.html', title='User: ' + nickname, posts=db.session.query(models.User).filter_by(nickname=nickname).first().posts, user_page=1)
 
-@mod.route('/signup', methods=['GET', 'POST'])
-def signup():
+
+@mod.route('/signup', methods=['GET'])
+def signup_get():
 	form = LoginForm()
-	if request.method == 'POST':
-		if form.validate_on_submit():
-			response = request.form.to_dict()
-			if db.session.query(models.User).filter_by(nickname=response['nickname']).first():
-				flash('Nickname already taken!', 'danger')
-				return render_template('login.html', title='Sign up', form=form), 401
-			user = models.User(nickname=response['nickname'], password=response['password'])
-			db.session.add(user)
-			db.session.commit()
-			login_user(user)
-			return redirect(url_for('home.index'))
-		flash('Please enter a nickname and a password!', 'danger')
-		return render_template('login.html', title='Sign up', form=form), 402
-	return render_template('login.html', title='Sign up', header='Sign up', form=form)
+	return render_template('login.html', title='Sign up', form=form)
+
+
+@mod.route('/signup', methods=['POST'])
+def signup_post():
+	form = LoginForm()
+	if form.validate_on_submit():
+		if db.session.query(models.User).filter_by(nickname=form.nickname.data).first():
+			flash('Nickname already taken!', 'danger')
+			return render_template('login.html', title='Sign up', form=form), 401
+		user = models.User(nickname=form.nickname.data, password=form.password.data)
+		db.session.add(user)
+		db.session.commit()
+		login_user(user)
+		return redirect(url_for('home.index'))
+	return render_template('login.html', title='Sign up', form=form), 402
+
 
 @mod.route('/login', methods=['GET', 'POST'])
 def login():
+	form = LoginForm()
 	if request.method == 'POST':
-		form = LoginForm(request.form)
 		if form.validate_on_submit():
 			user = user_logging_in(form)
 			if user is None:
 				flash('Wrong username or password!', 'danger')
 				return render_template('login.html', title='Login', form=form), 401
 			login_user(user)
-			return render_template('index.html', title='Home', header='App', user=user), 200
-		flash('Please enter a nickname and a password!', 'danger')
+			return render_template('index.html', title='Home', user=user)
 		return render_template('login.html', title='Login', form=form), 402
-	return render_template('login.html', title='Login', form=LoginForm())
+	return render_template('login.html', title='Login', form=form)
 
 def user_logging_in(form):
 	user = db.session.query(models.User).filter_by(nickname=form.nickname.data).first()

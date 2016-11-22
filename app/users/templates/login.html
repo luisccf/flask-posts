@@ -3,12 +3,33 @@
 
 {% if get_flashed_messages(with_categories=true) %}
 	{% for category, message in get_flashed_messages(with_categories=true) %}
-    <div class="alert alert-{{ category }} alert-dismissable animated fadeInDown">
+    <div class="alert alert-danger alert-dismissable animated fadeInDown">
+    	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+		<span class="sr-only"></span>
         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
         {{ message }}
     </div>
 	{% endfor %}
 {% endif %}
+
+{% for error in form.nickname.errors %}
+<div class="alert alert-danger alert-dismissable animated fadeInDown">
+	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+	<span class="sr-only"></span>
+    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+    {{ error }}
+</div>
+{% endfor %}
+
+{% for error in form.password.errors %}
+<div class="alert alert-danger alert-dismissable animated fadeInDown">
+	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+	<span class="sr-only"></span>
+    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+    {{ error }}
+</div>
+{% endfor %}
+
 
 <div class="col-sm-4">
 <form class="form-group" action="" method="post" name="login">
