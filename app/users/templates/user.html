@@ -5,7 +5,7 @@
 {% if current_user.is_authenticated %}
 <div class="row" style="margin-bottom: 20px;">
 	<div class="col-sm-2">
-		<a class="btn btn-default" href="{{ url_for('posts.add') }}">Add Post</a>
+		<a class="btn btn-default" href="{{ url_for('posts.add_post_get') }}">Add Post</a>
 	</div>
 </div>
 {% endif %}

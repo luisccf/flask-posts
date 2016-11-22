@@ -9,20 +9,24 @@ mod = Blueprint(
     'posts', __name__, static_folder='./static', template_folder='./templates', url_prefix='/posts')
 
 
-@mod.route('/add', methods=['GET', 'POST'])
+@mod.route('/add', methods=['GET'])
 @login_required
-def add():
+def add_post_get():
     form = PostForm()
-    status = 200
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            post = models.Post(
-                text=form.text.data, timestamp=datetime.datetime.utcnow(), user_id=current_user.id)
-            db.session.add(post)
-            db.session.commit()
-            return redirect(url_for('posts.posts'))
-     	status = 400
-    return render_template('add_post.html', title='Add Post', users=models.User.query.all(), form=form), status
+    return render_template('add_post.html', title='Add Post', users=models.User.query.all(), form=form)
+
+
+@mod.route('/add', methods=['POST'])
+@login_required
+def add_post_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = models.Post(
+            text=form.text.data, timestamp=datetime.datetime.utcnow(), user_id=current_user.id)
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('posts.posts'))
+    return render_template('add_post.html', title='Add Post', users=models.User.query.all(), form=form), 400
 
 
 @mod.route('/')
