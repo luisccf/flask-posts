@@ -37,13 +37,13 @@ class TestPost(unittest.TestCase):
         return self.tester.get('/posts/' + str(post_id) + '/remove-0', follow_redirects=True)
 
     def login(self, nickname, password):
-        return self.tester.post('/login', data=dict(
+        return self.tester.post('/users/login', data=dict(
             nickname=nickname,
             password=password
         ), follow_redirects=True)
 
     def logout(self):
-        return self.tester.get('/logout', follow_redirects=True)
+        return self.tester.get('/users/logout', follow_redirects=True)
 
     def test_add_post(self):
         faker = Faker()

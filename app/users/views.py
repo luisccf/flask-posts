@@ -5,15 +5,15 @@ from flask_login import login_user, logout_user, current_user, login_required
 import datetime
 
 
-mod = Blueprint('users', __name__, static_folder='./static', template_folder='./templates')
+mod = Blueprint('users', __name__, static_folder='./static', template_folder='./templates', url_prefix='/users')
 
 
-@mod.route('/users')
+@mod.route('/')
 def users():
 	return render_template('users.html', title='Users', users=models.User.query.all())
 
 
-@mod.route('/users/<nickname>')
+@mod.route('/<nickname>')
 def user(nickname):
 	return render_template('posts.html', title='User: ' + nickname, posts=db.session.query(models.User).filter_by(nickname=nickname).first().posts, user_page=1)
 

@@ -6,10 +6,10 @@ import datetime
 
 
 mod = Blueprint(
-    'posts', __name__, static_folder='./static', template_folder='./templates')
+    'posts', __name__, static_folder='./static', template_folder='./templates', url_prefix='/posts')
 
 
-@mod.route('/posts/add', methods=['GET', 'POST'])
+@mod.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
     form = PostForm()
@@ -25,18 +25,18 @@ def add():
     return render_template('add_post.html', title='Add Post', users=models.User.query.all(), form=form), status
 
 
-@mod.route('/posts')
+@mod.route('/')
 def posts():
     return render_template('posts.html', title='All Posts', posts=models.Post.query.all(), user_page=0)
 
 
-@mod.route('/posts/<int:post_id>')
+@mod.route('/<int:post_id>')
 def post(post_id):
     post = models.Post.query.get_or_404(post_id)
     return render_template('post.html', title='Post', post=post)
 
 
-@mod.route('/posts/<int:post_id>/remove-<int:user_page>')
+@mod.route('/<int:post_id>/remove-<int:user_page>')
 @login_required
 def remove(post_id, user_page):
     post = models.Post.query.get_or_404(post_id)
@@ -50,7 +50,7 @@ def remove(post_id, user_page):
     return redirect(url_for('posts.posts'))
 
 
-@mod.route('/posts/<int:post_id>/comment', methods=['GET', 'POST'])
+@mod.route('/<int:post_id>/comment', methods=['GET', 'POST'])
 @login_required
 def comment(post_id):
     form = PostForm()

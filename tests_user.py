@@ -37,19 +37,19 @@ class TestUser(unittest.TestCase):
 
 
     def login(self, nickname, password):
-        return self.tester.post('/login', data=dict(
+        return self.tester.post('/users/login', data=dict(
             nickname=nickname,
             password=password
         ), follow_redirects=True)
 
 
     def logout(self):
-        return self.tester.get('/logout', follow_redirects=True)
+        return self.tester.get('/users/logout', follow_redirects=True)
 
 
     def signup(self, nickname, password):
         fake = Faker()
-        return self.tester.post('/signup', data=dict(
+        return self.tester.post('/users/signup', data=dict(
             nickname=nickname,
             password=password
         ), follow_redirects=True)
